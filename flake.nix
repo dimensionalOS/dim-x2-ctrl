@@ -1,5 +1,5 @@
 {
-    description = "dim-controller: drive a running dimOS robot with its live 3D view, cameras and recording, as a dimOS Desktop app";
+    description = "dim-x2-ctrl: drive a running dimOS robot with its live 3D view, cameras and recording, as a dimOS Desktop app";
 
     inputs = {
         nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
@@ -31,7 +31,7 @@
                     # build machine (vite's native rollup and esbuild differ by OS and CPU): `deno task update-hashes` refreshes
                     # this machine's after frontend/deno.json or deno.lock change.
                     frontendModules = pkgs.stdenvNoCC.mkDerivation {
-                        name = "dim-controller-frontend-modules";
+                        name = "dim-x2-ctrl-frontend-modules";
                         src = frontendFiles [ ./frontend/deno.json ./frontend/deno.lock ];
                         nativeBuildInputs = [ deno ];
                         buildPhase = ''
@@ -57,7 +57,7 @@
                     # dimos-react's source at its tag (frontend/tools/esm_fetch.ts): a vite build with network that
                     # keeps only what it fetched, so fixed-output; the same on every system. `deno task update-hashes` refreshes it.
                     frontendEsm = pkgs.stdenvNoCC.mkDerivation {
-                        name = "dim-controller-frontend-esm";
+                        name = "dim-x2-ctrl-frontend-esm";
                         src = pageFiles;
                         nativeBuildInputs = [ deno ];
                         buildPhase = ''
@@ -76,7 +76,7 @@
 
                     # the page: React + Vite against those modules and that dimos-react cache, offline
                     frontend = pkgs.stdenvNoCC.mkDerivation {
-                        name = "dim-controller-frontend";
+                        name = "dim-x2-ctrl-frontend";
                         src = pageFiles;
                         nativeBuildInputs = [ deno ];
                         buildPhase = ''
@@ -114,7 +114,7 @@
 
                     server = rustBuild {
                         craneLib = (crane.mkLib pkgs).overrideToolchain (_: rust);
-                        pname = "dim-controller-server";
+                        pname = "dim-x2-ctrl-server";
                         cargoExtraArgs = "--locked";
                     };
 
@@ -128,7 +128,7 @@
                         in
                         rustBuild {
                             craneLib = (crane.mkLib pkgs).overrideToolchain (_: rustCross);
-                            pname = "dim-controller-server-${arch}-linux";
+                            pname = "dim-x2-ctrl-server-${arch}-linux";
                             cargoExtraArgs = "--locked -p dimos-app-server --target ${target}";
                             extra = {
                                 nativeBuildInputs = [ pkgs.cargo-zigbuild pkgs.zig ];
@@ -148,7 +148,7 @@
                     # the same wrapper as dimosApp, but its shell is the target's (a cache.nixos.org download); the frontend is plain JS
                     linuxApp = arch:
                         let linux = nixpkgs.legacyPackages."${arch}-linux"; in
-                        pkgs.runCommand "dim-controller-${arch}-linux" { } ''
+                        pkgs.runCommand "dim-x2-ctrl-${arch}-linux" { } ''
                             mkdir -p $out/bin
                             printf '#!%s\nexport CONTROLLER_FRONTEND="''${CONTROLLER_FRONTEND:-%s}"\nexec %s "$@"\n' \
                                 ${linux.runtimeShell} ${frontend} ${crossServer arch}/bin/dimos-app-server > $out/bin/dimos-app-server
@@ -158,7 +158,7 @@
                 in {
                     inherit frontend frontendModules frontendEsm server;
                     # what Desktop builds: bin/dimos-app-server, which serves everything under /apps/<name>/
-                    dimosApp = pkgs.runCommand "dim-controller" { nativeBuildInputs = [ pkgs.makeWrapper ]; } ''
+                    dimosApp = pkgs.runCommand "dim-x2-ctrl" { nativeBuildInputs = [ pkgs.makeWrapper ]; } ''
                         mkdir -p $out/bin
                         makeWrapper ${server}/bin/dimos-app-server $out/bin/dimos-app-server --set-default CONTROLLER_FRONTEND ${frontend}
                         cp ${./icon.svg} $out/icon.svg

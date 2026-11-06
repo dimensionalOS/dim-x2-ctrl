@@ -17,7 +17,7 @@ fn cache_dir() -> PathBuf {
         .map(PathBuf::from)
         .or_else(|| std::env::var_os("HOME").map(|home| PathBuf::from(home).join(".cache")))
         .unwrap_or_else(std::env::temp_dir);
-    base.join("dim-controller").join("hook")
+    base.join("dim-x2-ctrl").join("hook")
 }
 
 /// Run install_hook.py with `args`; its output.

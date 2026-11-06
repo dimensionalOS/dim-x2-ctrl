@@ -7,7 +7,7 @@ import { esmFetch } from "./tools/esm_fetch.ts"
 // served at /apps/<name>/, so every asset URL is relative; the dev server forwards the gateway and the backend to a
 // running Desktop (DESKTOP_URL, default 7077) and to this app's own server through it
 const desktop = process.env.DESKTOP_URL ?? "http://127.0.0.1:7077"
-const app = process.env.APP_NAME ?? "dim-controller"
+const app = process.env.APP_NAME ?? "dim-x2-ctrl"
 const imports: Record<string, string> = JSON.parse(readFileSync(new URL("./deno.json", import.meta.url), "utf8")).imports
 // dimos-react: its TypeScript source at its tag on GitHub (deno.json's URLs, the same files deno and the tests read),
 // fetched and compiled into the page; its react, react-dom and three resolve to this page's own

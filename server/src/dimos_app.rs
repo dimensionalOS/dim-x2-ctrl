@@ -81,7 +81,7 @@ pub fn data_dir() -> PathBuf {
         .map(PathBuf::from)
         .or_else(|| std::env::var_os("HOME").map(|home| PathBuf::from(home).join(".local").join("share")))
         .unwrap_or_else(std::env::temp_dir);
-    base.join("dim-controller")
+    base.join("dim-x2-ctrl")
 }
 
 #[cfg(test)]
