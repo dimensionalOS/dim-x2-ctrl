@@ -4,32 +4,32 @@
 # The first run swaps the install's `result` for a wrapper that keeps Desktop's nix-built server but points
 # CONTROLLER_FRONTEND there, and has Desktop restart the backend. --server also builds this checkout's server (cargo, dev
 # profile) and runs that instead, with this checkout's dimos.yaml (Desktop refuses calls the installed one doesn't list).
-#   scripts/hot [--server]   from a dim-controller checkout
+#   scripts/hot [--server]   from a dim-x2-ctrl checkout
 #   scripts/hot --undo       back to the nix build Desktop made (a Desktop update or `dimos-desktop checkout` also ends it)
 # DESKTOP_URL (default http://localhost:5555) and DIMOS_APPS (default ~/.dimos/apps) point it at another Desktop here.
 set -euo pipefail
-app_dir="${DIMOS_APPS:-$HOME/.dimos/apps}/dim-controller"
+app_dir="${DIMOS_APPS:-$HOME/.dimos/apps}/dim-x2-ctrl"
 desktop="${DESKTOP_URL:-http://localhost:5555}"
 hot="$app_dir/hot"
 repo="$(git -C "$(dirname "$0")" rev-parse --show-toplevel)"
 
 restart() {
-    if ! curl -sf -X POST "$desktop/gateways/desktop/management/apps/dim-controller/reload" >/dev/null; then
+    if ! curl -sf -X POST "$desktop/gateways/desktop/management/apps/dim-x2-ctrl/reload" >/dev/null; then
         echo "Desktop at $desktop didn't take the reload: is it running (and new enough)? Restart it to pick up the build" >&2
         return 1
     fi
     for _ in $(seq 1 60); do
-        if curl -sf "$desktop/apps/dim-controller/api/settings" >/dev/null; then
+        if curl -sf "$desktop/apps/dim-x2-ctrl/api/settings" >/dev/null; then
             return 0
         fi
         sleep 0.5
     done
-    echo "the controller backend didn't come back (its output: the App Store, on dim-controller's page)" >&2
+    echo "the controller backend didn't come back (its output: the App Store, on dim-x2-ctrl's page)" >&2
     return 1
 }
 
 if [ ! -d "$app_dir" ]; then
-    echo "dim-controller isn't installed here ($app_dir): dimos-desktop install https://github.com/jeff-hykin/dim-controller" >&2
+    echo "dim-x2-ctrl isn't installed here ($app_dir): dimos-desktop install https://github.com/dimensionalOS/dim-x2-ctrl" >&2
     exit 1
 fi
 
@@ -42,7 +42,7 @@ if [ "${1:-}" = "--undo" ]; then
     elif [ -L "$app_dir/.result-nix" ]; then
         # its nix build was garbage-collected: build the installed release again
         rm "$app_dir/.result-nix"
-        dimos-desktop checkout dim-controller "$(git -C "$app_dir" describe --tags --abbrev=0)"
+        dimos-desktop checkout dim-x2-ctrl "$(git -C "$app_dir" describe --tags --abbrev=0)"
     fi
     echo "back to $(readlink "$app_dir/result")"
     exit 0
@@ -55,7 +55,7 @@ fi
 current="$(readlink "$app_dir/result" || true)"
 if [ -z "$current" ] || { [ ! -e "$current" ] && [ "${current#"$hot"/}" = "$current" ]; }; then
     # an update can check out a tag without building it
-    echo "the installed controller has no build: dimos-desktop checkout dim-controller <its tag> first" >&2
+    echo "the installed controller has no build: dimos-desktop checkout dim-x2-ctrl <its tag> first" >&2
     exit 1
 fi
 
