@@ -130,3 +130,5 @@ Screenshots ([docs/screenshots.py](docs/screenshots.py)): dim-go2-sim's ranch sc
 Robot-type icons (`frontend/public/robots/`) are modified from: "Humanoid robot" and "robot dog" by Izwar Muis and
 "Robotics" by rukanicon (Noun Project, [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/)), and Tabler Icons
 "drone" (MIT). Links in [docs/reference.md](docs/reference.md#credits).
+
+Scene: "Home Scan" by luxury_scans (https://superspl.at/scene/3f89bbd3)
