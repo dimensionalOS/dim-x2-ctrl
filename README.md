@@ -4,6 +4,8 @@ Drive and watch a running dimOS robot: a 3D view placed by TF, cameras, a 2D map
 planning and an mcap recorder. A [dimOS Desktop](https://github.com/dimensionalOS/dimos-desktop) app, meant to be
 [forked per robot](#fork-it-for-your-robot).
 
+![Controller: camera as the main view, the map and 3D view on the left, status and settings on the right](docs/desktop.jpg)
+
 ```sh
 dimos-desktop install https://github.com/dimensionalOS/dim-x2-ctrl
 ```
